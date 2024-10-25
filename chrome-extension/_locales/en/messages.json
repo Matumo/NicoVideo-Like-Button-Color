@@ -1,0 +1,11 @@
+{
+  "extensionName": {
+    "message": "NicoNico Like Button Color"
+  },
+  "extensionDescription": {
+    "message": "Change the color of the NicoNico like button based on its state."
+  },
+  "savedMessage": {
+    "message": "Saved. Refresh the page to see the changes."
+  }
+}
