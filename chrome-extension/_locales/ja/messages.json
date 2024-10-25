@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "ニコニコ いいねボタン カラー"
+    "message": "ニコニコ動画 いいねボタン カラー"
   },
   "extensionDescription": {
-    "message": "ニコニコのいいねボタンの色を変更します。"
+    "message": "ニコニコ動画のいいねボタンの色を変更します。"
   },
   "savedMessage": {
     "message": "保存しました。ページ更新で反映されます。"
