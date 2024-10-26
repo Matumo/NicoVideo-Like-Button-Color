@@ -1,1 +1,1 @@
-# NicoNico-Like-Button-Color
+# NicoVideo-Like-Button-Color
