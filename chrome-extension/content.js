@@ -9,7 +9,8 @@
 
   // いいねボタンがDOMに追加されるのを監視
   const observer = new MutationObserver((mutations, observerInstance) => {
-    const button = document.getElementById('hover-card::rf::trigger');
+    const button = document.getElementById('hover-card::rf::trigger') ||
+                   document.getElementById('hover-card:«rf»:trigger');
     if (button) {
       // ボタンが見つかったら監視を停止
       observerInstance.disconnect();
