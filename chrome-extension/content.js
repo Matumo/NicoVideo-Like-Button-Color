@@ -125,4 +125,19 @@
   // 処理開始
   init();
 
+  // 全画面表示のイベントリスナーでイベント発生時にボタン追加検出の監視を開始
+  document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+      // 全画面表示中の処理
+      console.debug("Fullscreen mode activated");
+      // 再処理
+      init();
+    } else {
+      // 全画面表示解除時の処理
+      console.debug("Fullscreen mode deactivated");
+      // 再処理
+      init();
+    }
+  });
+
 })();
