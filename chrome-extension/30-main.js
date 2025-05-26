@@ -15,9 +15,8 @@
   function addButtonCheckObserver(_button) {
     const button = _button;
 
-    // svg要素とデフォルトの色を取得
+    // svg要素を取得
     let svgPath = button.querySelector('svg path');
-    const defaultColor = svgPath ? svgPath.getAttribute('fill') : null;
 
     // 前回の状態を保存しておき、変更があった場合のみ色を更新
     let lastSvgPath = null;
@@ -27,16 +26,18 @@
     function updateSvgColor() {
       const params = JSON.parse(button.getAttribute('data-element-params'));
       const currentStatus = params.current; // いいね！しているかどうか
+      console.debug("updateSvgColor called with currentStatus:", currentStatus === true);
 
       // svg要素は置き換わるため、再度取得
       svgPath = button.querySelector('svg path');
-      if (!svgPath) return;
+      if (!svgPath) {
+        console.debug("SVG path not found, cannot update color.");
+        return;
+      }
 
       // いいね！している場合は指定色、していない場合はデフォルト色または未指定にする
       if (currentStatus) {
         svgPath.setAttribute('fill', likeButtonColor);
-      } else if (defaultColor) {
-        svgPath.setAttribute('fill', defaultColor);
       } else {
         svgPath.removeAttribute('fill');
       }
