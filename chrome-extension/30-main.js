@@ -56,6 +56,8 @@
       let shouldUpdate1 = false;
       let shouldUpdate2 = false;
 
+      console.debug("MutationObserver triggered for button:", button);
+
       // このスクリプトによる変更以外の変更があるかどうかを判定
       for (const mutation of mutations) {
         if (
@@ -109,6 +111,11 @@
   });
 
   function init() {
+    // URLが動画再生ページかどうかを確認
+    if (!nicoVideoPageUrlPatternRegExp.test(window.location.href)) {
+      console.debug("Not a nico video page, exiting init.");
+      return;
+    }
     // ボタンが追加されていればボタンの監視を開始
     const button = document.querySelector(button_selector);
     if (button) {
@@ -122,62 +129,20 @@
     }
   }
 
-  // 処理開始
-  init();
+  // URLが変更されたときのイベントリスナーを登録
+  window.addEventListener(nicoVideoPageUrlChangedEventName, (event) => {
+    console.log("Change nico video page URL event.");
+    // 初期化処理を実行
+    init();
+  });
 
   // 全画面表示のイベントリスナーでイベント発生時にボタン追加検出の監視を開始
   document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-      // 全画面表示中の処理
-      console.debug("Fullscreen mode activated");
-      // 再処理
-      init();
-    } else {
-      // 全画面表示解除時の処理
-      console.debug("Fullscreen mode deactivated");
-      // 再処理
-      init();
-    }
+    console.debug("Fullscreen change detected.");
+    // 初期化処理を実行
+    init();
   });
 
-  // サイトURLの変更イベント発火
-  let lastUrl = window.location.href;
-  function checkUrlChange() {
-    try {
-      const currentUrl = window.location.href;
-      console.debug("Checking URL change.", "Current URL:", currentUrl, "Last URL:", lastUrl);
-      // URLが変わったかどうかを確認
-      if (currentUrl !== lastUrl) {
-        lastUrl = currentUrl;
-        console.debug("Detected URL change.");
-        init(); // URLが変わったら再度ボタンの監視を開始
-      } else {
-        console.debug("No URL change detected.");
-      }
-    } catch (error) {
-      console.debug("Error checking URL change:", error);
-    }
-  };
-
-  // URLの監視を開始
-  {
-    console.debug("Initializing URL change observer.");
-    // 初回イベント実行
-    checkUrlChange();
-    // popstateイベントを監視
-    window.addEventListener('popstate', function () {
-      console.debug("popstate event detected.");
-      checkUrlChange();
-    });
-    // DOM変更を監視
-    const urlChangeObserver = new MutationObserver(() => {
-      console.debug("DOM mutation detected for URL change.");
-      checkUrlChange();
-    });
-    urlChangeObserver.observe(document.head, {
-      childList: true,
-      attributes: true,
-    });
-    console.debug("URL change observer initialized.");
-  }
+  // 初期化処理を実行
+  init();
 })();
