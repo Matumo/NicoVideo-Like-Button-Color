@@ -15,9 +15,8 @@
   function addButtonCheckObserver(_button) {
     const button = _button;
 
-    // svg要素とデフォルトの色を取得
+    // svg要素を取得
     let svgPath = button.querySelector('svg path');
-    const defaultColor = svgPath ? svgPath.getAttribute('fill') : null;
 
     // 前回の状態を保存しておき、変更があった場合のみ色を更新
     let lastSvgPath = null;
@@ -27,16 +26,18 @@
     function updateSvgColor() {
       const params = JSON.parse(button.getAttribute('data-element-params'));
       const currentStatus = params.current; // いいね！しているかどうか
+      console.debug("updateSvgColor called with currentStatus:", currentStatus === true);
 
       // svg要素は置き換わるため、再度取得
       svgPath = button.querySelector('svg path');
-      if (!svgPath) return;
+      if (!svgPath) {
+        console.debug("SVG path not found, cannot update color.");
+        return;
+      }
 
       // いいね！している場合は指定色、していない場合はデフォルト色または未指定にする
       if (currentStatus) {
         svgPath.setAttribute('fill', likeButtonColor);
-      } else if (defaultColor) {
-        svgPath.setAttribute('fill', defaultColor);
       } else {
         svgPath.removeAttribute('fill');
       }
@@ -55,6 +56,8 @@
     const attributeObserver = new MutationObserver((mutations) => {
       let shouldUpdate1 = false;
       let shouldUpdate2 = false;
+
+      console.debug("MutationObserver triggered for button:", button);
 
       // このスクリプトによる変更以外の変更があるかどうかを判定
       for (const mutation of mutations) {
@@ -109,6 +112,11 @@
   });
 
   function init() {
+    // URLが動画再生ページかどうかを確認
+    if (!nicoVideoPageUrlPatternRegExp.test(window.location.href)) {
+      console.debug("Not a nico video page, exiting init.");
+      return;
+    }
     // ボタンが追加されていればボタンの監視を開始
     const button = document.querySelector(button_selector);
     if (button) {
@@ -122,22 +130,20 @@
     }
   }
 
-  // 処理開始
-  init();
+  // URLが変更されたときのイベントリスナーを登録
+  window.addEventListener(nicoVideoPageUrlChangedEventName, (event) => {
+    console.log("Change nico video page URL event.");
+    // 初期化処理を実行
+    init();
+  });
 
   // 全画面表示のイベントリスナーでイベント発生時にボタン追加検出の監視を開始
   document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-      // 全画面表示中の処理
-      console.debug("Fullscreen mode activated");
-      // 再処理
-      init();
-    } else {
-      // 全画面表示解除時の処理
-      console.debug("Fullscreen mode deactivated");
-      // 再処理
-      init();
-    }
+    console.debug("Fullscreen change detected.");
+    // 初期化処理を実行
+    init();
   });
 
+  // 初期化処理を実行
+  init();
 })();

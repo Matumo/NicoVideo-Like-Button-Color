@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "permissions": ["storage"],
   "options_page": "options.html",
   "action": {
@@ -22,12 +22,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.nicovideo.jp/watch/*"],
-      "js": ["content.js"]
+      "matches": ["https://www.nicovideo.jp/*"],
+      "js": [
+        "00-debug.js", "01-config.js", "02-logger.js",
+        "10-observer.js",
+        "30-main.js"
+      ]
     }
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "default_locale": "en"
 }
