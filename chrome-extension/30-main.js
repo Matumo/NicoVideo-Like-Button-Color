@@ -3,8 +3,8 @@
 
   // いいね！ボタンのセレクタ
   const button_selector = '[data-element-name="like"]';
-
-  console.debug("Content script loaded");
+  // いいね！ボタンが含まれるコンテナ要素のセレクタ
+  const button_container_selector = 'div.grid-area_\\[player\\] > div > div > div[data-styling-id]';
 
   // 拡張機能のストレージから設定された色を取得
   const { likeButtonColor } = await chrome.storage.local.get({ likeButtonColor: "#FF8FA8" });
@@ -101,15 +101,43 @@
   }
 
   // いいねボタンがDOMに追加されるのを監視
-  const observer = new MutationObserver((mutations, observerInstance) => {
+  let prevButtonElement = null;
+  function getButtonAndStartCheck() {
+    // ボタン要素を取得
     const button = document.querySelector(button_selector);
     if (!button) return;
-    // ボタンが見つかったら監視を停止
-    observerInstance.disconnect();
-    console.debug("Button found:", button);
+    // 前回と同じ要素なら何もしない
+    if (button === prevButtonElement) return;
+    prevButtonElement = button;
     // ボタンが見つかったらボタンを監視して色を変更するObserverの追加
+    console.debug("Button found:", button);
     addButtonCheckObserver(button);
-  });
+  }
+
+  // いいねボタンのコンテナがDOMに追加されるのを監視
+  let currentFindButtonContainerObserver = null;
+  function getButtonContainerAndStartObserver(mutationsList, observer) {
+    // コンテナ要素を取得
+    const container = document.querySelector(button_container_selector);
+    if (!container) return;
+    // コンテナが見つかったらコンテナ自体の監視は停止する
+    console.debug("Button container found:", container);
+    observer.disconnect();
+    // 既にいいね！ボタンのコンテナの変更を監視していたら停止
+    if (currentFindButtonContainerObserver) {
+      currentFindButtonContainerObserver.disconnect();
+      currentFindButtonContainerObserver = null;
+      console.debug("Previous find button container observer disconnected");
+    }
+    // いいね！ボタンのコンテナの変更を監視
+    const buttonObserver = new MutationObserver(getButtonAndStartCheck);
+    const config = { childList: true, subtree: false };
+    buttonObserver.observe(container, config);
+    currentFindButtonContainerObserver = buttonObserver;
+    console.debug("Find button container observer started");
+    // 初回実行
+    getButtonAndStartCheck();
+  }
 
   function init() {
     // URLが動画再生ページかどうかを確認
@@ -117,17 +145,13 @@
       console.debug("Not a nico video page, exiting init.");
       return;
     }
-    // ボタンが追加されていればボタンの監視を開始
-    const button = document.querySelector(button_selector);
-    if (button) {
-      console.debug("Button already exists");
-      // ボタンを監視して色を変更するObserverの追加
-      addButtonCheckObserver(button);
-    } else {
-      // ボタンが見つからない場合はDOMの変更を監視
-      console.debug("Button not found, starting observer");
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
+    // DOMの変更を監視
+    const observer = new MutationObserver(getButtonContainerAndStartObserver);
+    const config = { childList: true, subtree: true };
+    observer.observe(document.body, config);
+    console.debug("Main observer started for body mutations.");
+    // 初回実行
+    getButtonContainerAndStartObserver();
   }
 
   // URLが変更されたときのイベントリスナーを登録
