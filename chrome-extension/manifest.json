@@ -4,9 +4,9 @@
   "description": "__MSG_extensionDescription__",
   "version": "1.0.4",
   "permissions": ["storage"],
-  "options_page": "options.html",
+  "options_page": "src/popup/options.html",
   "action": {
-    "default_popup": "options.html",
+    "default_popup": "src/popup/options.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -24,9 +24,17 @@
     {
       "matches": ["https://www.nicovideo.jp/*"],
       "js": [
-        "00-debug.js", "01-config.js", "02-logger.js",
-        "10-observer.js",
-        "30-main.js"
+        "src/config/debug.js",
+        "src/config/config.js",
+        "src/config/storage.js",
+
+        "src/util/logger.js",
+
+        "src/observer/button.js",
+        "src/observer/container.js",
+        "src/observer/page.js",
+
+        "src/main.js"
       ]
     }
   ],
