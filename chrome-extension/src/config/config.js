@@ -10,3 +10,10 @@ const nicoVideoPageUrlPatternRegExp = new RegExp('^https://www\\.nicovideo\\.jp/
 const logPrefix = '[niconico-like]';
 const logLevel = debugMode ? 'debug' : 'log'; // ログレベル: 'error', 'warn', 'info', 'log', 'debug'
 const logSufixType = debugMode ? 'long' : 'none'; // ログのサフィックスタイプ: 'none', 'short', 'long'
+
+// いいね！ボタンのセレクタ
+const button_selector = '[data-element-name="like"]';
+// いいね！ボタンが含まれるコンテナ要素のセレクタ
+const button_container_selector = 'div.grid-area_\\[player\\] > div > div > div[data-styling-id]';
+// フルスクリーンの切り替え時に子要素が変化するセレクタ（モニターとブラウザの両モード対応）
+const fullscreen_change_selector = 'div.grid-area_\\[player\\] > div.PlayerPresenter';

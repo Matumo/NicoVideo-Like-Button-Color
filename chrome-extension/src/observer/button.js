@@ -1,18 +1,13 @@
-(async function() {
-  'use strict';
+'use strict';
 
-  // いいね！ボタンのセレクタ
-  const button_selector = '[data-element-name="like"]';
+// いいね！ボタンを監視して色を変更する
 
-  console.debug("Content script loaded");
+let startButtonCheckObserver = null;
 
-  // 拡張機能のストレージから設定された色を取得
-  const { likeButtonColor } = await chrome.storage.local.get({ likeButtonColor: "#FF8FA8" });
-  console.debug("likeButtonColor:", likeButtonColor);
-
+{
   // ボタンを監視して色を変更するObserver
   let currentButtonCheckObserver = null;
-  function addButtonCheckObserver(_button) {
+  startButtonCheckObserver = function(_button) {
     const button = _button;
 
     // svg要素を取得
@@ -99,51 +94,4 @@
     updateSvgColor();
     console.debug("Button and SVG path loaded");
   }
-
-  // いいねボタンがDOMに追加されるのを監視
-  const observer = new MutationObserver((mutations, observerInstance) => {
-    const button = document.querySelector(button_selector);
-    if (!button) return;
-    // ボタンが見つかったら監視を停止
-    observerInstance.disconnect();
-    console.debug("Button found:", button);
-    // ボタンが見つかったらボタンを監視して色を変更するObserverの追加
-    addButtonCheckObserver(button);
-  });
-
-  function init() {
-    // URLが動画再生ページかどうかを確認
-    if (!nicoVideoPageUrlPatternRegExp.test(window.location.href)) {
-      console.debug("Not a nico video page, exiting init.");
-      return;
-    }
-    // ボタンが追加されていればボタンの監視を開始
-    const button = document.querySelector(button_selector);
-    if (button) {
-      console.debug("Button already exists");
-      // ボタンを監視して色を変更するObserverの追加
-      addButtonCheckObserver(button);
-    } else {
-      // ボタンが見つからない場合はDOMの変更を監視
-      console.debug("Button not found, starting observer");
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-  }
-
-  // URLが変更されたときのイベントリスナーを登録
-  window.addEventListener(nicoVideoPageUrlChangedEventName, (event) => {
-    console.log("Change nico video page URL event.");
-    // 初期化処理を実行
-    init();
-  });
-
-  // 全画面表示のイベントリスナーでイベント発生時にボタン追加検出の監視を開始
-  document.addEventListener('fullscreenchange', () => {
-    console.debug("Fullscreen change detected.");
-    // 初期化処理を実行
-    init();
-  });
-
-  // 初期化処理を実行
-  init();
-})();
+}

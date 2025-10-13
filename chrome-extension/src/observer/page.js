@@ -1,4 +1,6 @@
-// 監視機能
+"use strict";
+
+// サイトURLの変更を監視
 
 {
   // サイトURLの変更イベント発火
@@ -23,8 +25,6 @@
   // URLの監視を開始
   {
     console.debug("Initializing URL change observer.");
-    // 初回イベント実行
-    checkUrlChange();
     // popstateイベントを監視
     window.addEventListener('popstate', function () {
       console.debug("popstate event detected.");
@@ -40,5 +40,7 @@
       attributes: true,
     });
     console.debug("URL change observer initialized.");
+    // 初回イベント実行
+    checkUrlChange();
   }
 }
