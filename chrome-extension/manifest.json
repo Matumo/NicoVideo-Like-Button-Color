@@ -26,6 +26,7 @@
       "js": [
         "src/config/debug.js",
         "src/config/config.js",
+        "src/config/storage.js",
 
         "src/util/logger.js",
 
