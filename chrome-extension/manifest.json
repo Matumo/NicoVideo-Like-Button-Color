@@ -30,6 +30,8 @@
 
         "src/util/logger.js",
 
+        "src/observer/button.js",
+        "src/observer/container.js",
         "src/observer/page.js",
 
         "src/main.js"
