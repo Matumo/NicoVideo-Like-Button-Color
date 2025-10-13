@@ -2,12 +2,12 @@
 
 // いいね！ボタンを監視して色を変更する
 
-let addButtonCheckObserver = null;
+let startButtonCheckObserver = null;
 
 {
   // ボタンを監視して色を変更するObserver
   let currentButtonCheckObserver = null;
-  addButtonCheckObserver = function(_button) {
+  startButtonCheckObserver = function(_button) {
     const button = _button;
 
     // svg要素を取得
