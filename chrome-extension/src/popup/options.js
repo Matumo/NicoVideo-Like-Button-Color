@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('title').textContent = title;
   }
 
+  // 保存ボタンを設定
+  {
+    const saveButton = document.getElementById('save');
+    const saveLabel = chrome.i18n.getMessage("saveButton") || "Save";
+    saveButton.textContent = saveLabel;
+  }
+
   // svg生成関数
   function createSVGIcon(fillColor, strokeColor = null, strokeWidth = 1.5) {
     // 塗りつぶしのみのパス
