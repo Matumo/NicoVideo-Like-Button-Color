@@ -7,5 +7,8 @@
   },
   "savedMessage": {
     "message": "保存しました。ページ更新で反映されます。"
+  },
+  "saveButton": {
+    "message": "保存"
   }
 }
