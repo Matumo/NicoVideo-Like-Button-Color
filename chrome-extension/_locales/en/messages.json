@@ -7,5 +7,8 @@
   },
   "savedMessage": {
     "message": "Saved. Refresh the page to see the changes."
+  },
+  "saveButton": {
+    "message": "Save"
   }
 }
